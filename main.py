@@ -28,4 +28,15 @@ if __name__ == "__main__":
     # Step 2: Get a frame from the audio mic
     frame_aud = get_aud_frame()
     
+    
+    # Step 3: Basketball Detection with CV2
 
+    # Step 4: Motion Analysis: Analyze the ball's motion specificallyfocusing on vertical movement, to identify bounces
+
+    # Step 5: Audio Processing: Process audio signals to identify distinct sounds associated with ball bounces
+    
+    # Step 6: Synchronization: Sync the info from the camera and audio processing to correlate visual and auditory cues
+    
+    # Step 7: Bounce Detection: Develop an algorithm that detects when the ball makes contact with the surface based on both visual and audio cues
+    
+    # Step 8: counting Mechanism: Implement a counter that increments each time a bounce is successfully detected
