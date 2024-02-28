@@ -43,6 +43,8 @@ def detect_ball_coordinates(frame, color):
     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     center = None
+
+    ball_coords = ()
     
     # only proceed if at least one contour was found
     if len(cnts) > 0:
@@ -51,10 +53,10 @@ def detect_ball_coordinates(frame, color):
         # centroid
         c = max(cnts, key=cv2.contourArea)
         ((x, y), radius) = cv2.minEnclosingCircle(c)
-        M = cv2.moments(c)
-        ball_coords = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
         # only proceed if the radius meets a minimum size
-        if radius > 10:
+        if radius > 20:
+            M = cv2.moments(c)
+            ball_coords = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
             # draw the circle and centroid on the frame,
             # then update the list of tracked points
             cv2.circle(frame, (int(x), int(y)), int(radius),
@@ -77,6 +79,7 @@ if __name__ == "__main__":
     while True:
         # Step 1: Get a frame from the camera
         frame_cam = get_cam_frame(cap_v)
+        frame_cam = cv2.flip(frame_cam, 1)
 
         # Step 2: Get a frame from the audio mic
         frame_aud = get_aud_frame(cap_a)
@@ -90,13 +93,16 @@ if __name__ == "__main__":
             frame_cam, color
             )  # Detects balls in the camera frame
         
-        ball_coords.append(basketballs)
-        for i_coord in ball_coords:
-            x = i_coord[0]
-            y = i_coord[1]
-            radius = 5
-            cv2.circle(frame_cam, (int(x), int(y)), int(radius),
-                (255, 0, 0), -1)
+        if len(basketballs) > 1:
+            ball_coords.append(basketballs)
+
+        if len(ball_coords):
+            for i_coord in ball_coords:
+                x = i_coord[0]
+                y = i_coord[1]
+                radius = 5
+                cv2.circle(frame_cam, (int(x), int(y)), int(radius),
+                    (255, 0, 0), -1)
         
         cv2.imshow("Frame", frame_cam)
         cv2.waitKey(1)
